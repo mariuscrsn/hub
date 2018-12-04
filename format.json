@@ -1,0 +1,13 @@
+[
+    {
+        "ip": "Dirección ip",
+        "config": [
+            {
+                "segment": "Segmento al que se quieren añadir puertos",
+                "ports": [
+                    "puertos a añadir al segmento superior"
+                ]
+            }
+        ]
+    }
+]
