@@ -1,22 +1,25 @@
 import json
-# import argparse
-
-# Parseador de argumentos
-#parser = argparse.ArgumentParser(description='Configurac los diferentes segmentos en los routers pasados')
-#parser.add_argument('fichero', metavar='FILE', type=str, nargs='+',
-#                    help='fichero de configuración a usar')
+import argparse
+import socket
 
 def validate_port(port):
     # TODO: Validar puerto
-    return port > 0
+    return port >= 0
 
 def validate_segment(segment):
     # TODO: Validar segmento
-    return segment > 0
+    return segment >= 0
 
 def validate_ip(ip):
-    # TODO: Validar ip
-    return True
+    ''' Return true if ip is a valid address
+    '''
+    try:
+        socket.inet_aton(ip)
+        # legal address
+        return True
+    except socket.error:
+        # Not legal address
+        return False
 
 def validate_input(json_object):
     """ Devuelve true si json_object pasalos requisitos necesarios para ser un fichero válido
@@ -45,13 +48,34 @@ def validate_input(json_object):
     # Todos los campos existen y están bien
     return True
 
-with open("example.json", "r") as read_file:
-    try:
-        data = json.load(read_file)
-        print(validate_input(data))
-    except ValueError as ve:
-        print("Error al parsear el json")
-        exit()
+def config_hubs(json_object):
+    ''' 
+        El fichero de entrada está validado y es correcto, por lo que se puede proceder
+        a configurar los hubs
+    '''
+    # TODO: Implementar esta función
+    # Para implementarla mirar https://docs.python.org/3/library/subprocess.html
+    # Subprocess vale para lanzar comando de shell
+    pass
 
-print("final")
+def main():
+    # Parseador de argumentos
+    parser = argparse.ArgumentParser(description='Configura los diferentes segmentos en los routers pasados')
+    parser.add_argument('fichero', metavar='file', type=str,
+                        help='fichero de configuración a usar')
+    args = parser.parse_args()
+    print(args.fichero)
+    try:    
+        with open(args.fichero, "r") as read_file:
+            try:
+                data = json.load(read_file)
+                if validate_input(data):
+                    config_hubs(data)
+                else:
+                    print("Los datos del fichero de entrada son incoherentes")
+            except ValueError as ve:
+                print("El formato del fichero de entrada es incorrecto")
+    except IOError:
+        print("No se puede leer el fichero ", args.fichero)
 
+main()
