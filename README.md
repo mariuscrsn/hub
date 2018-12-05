@@ -1,5 +1,5 @@
 # Descripción
-Script que configura los segmentos de un grupo de hubs mediante el protocolo SNMP.
+Script que configura los segmentos de un grupo de hubs mediante el protocolo SNMP. El formato del fichero de configuración debe ser json. Se proporciona un fichero de ejemplo (example.json) que configura nuestro hub y el de los compañero de la bancada 3.
 
 # Uso
 ```bash
