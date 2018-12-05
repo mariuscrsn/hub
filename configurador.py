@@ -3,12 +3,10 @@ import argparse
 import socket
 
 def validate_port(port):
-    # TODO: Validar puerto
-    return port >= 0
+    return port >= 1 and port <= 24
 
 def validate_segment(segment):
-    # TODO: Validar segmento
-    return segment >= 0
+    return segment >= 0 and segment <= 4
 
 def validate_ip(ip):
     ''' Return true if ip is a valid address
@@ -28,22 +26,32 @@ def validate_input(json_object):
     """
     try:
         if type(json_object) is not list:
+            print("json_object")
             return False
         for machine_config in json_object:
             if (type(machine_config["ip"]) is not str) or not validate_ip(machine_config["ip"]):
+                print("ip")
+                return False
+            if type(machine_config["community"]) is not str:
+                print("community")
                 return False
             if type(machine_config["config"]) is not list:
+                print("config")
                 return False
             for actual_config in machine_config["config"]:
                 if (type(actual_config["segment"]) is not int) or not validate_segment(actual_config["segment"]):
+                    print("segment")
                     return False
                 if type(actual_config["ports"]) is not list:
+                    print("ports")
                     return False
                 for actual_port in actual_config["ports"]:
                     if (type(actual_port) is not int) or not validate_port(actual_port):
+                        print("ports2")
                         return False
     except KeyError as ke:
         # Formato incorrecto debido a que algún campo no existe
+        print("ke")
         return False
     # Todos los campos existen y están bien
     return True

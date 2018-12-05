@@ -1,6 +1,7 @@
 [
     {
         "ip": "Dirección ip",
+        "community": "Community",
         "config": [
             {
                 "segment": "Segmento al que se quieren añadir puertos",
