@@ -12,6 +12,7 @@ $ python3 configurador.py nombre_config_file
 [
     {
         "ip": "String",
+        "community": "String",
         "config": [
             {
                 "segment": "Integer",
@@ -27,6 +28,7 @@ $ python3 configurador.py nombre_config_file
 [
     {
         "ip": "Dirección ip",
+        "community": "Community",
         "config": [
             {
                 "segment": "Segmento al que se quieren añadir puertos",

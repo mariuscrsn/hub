@@ -1,10 +1,29 @@
 [
     {
         "ip": "192.168.1.1",
+        "community": "security",
         "config": [
             {
                 "segment": 2,
-                "ports": [2,5]
+                "ports": [2,5,6,7]
+            },
+            {
+                "segment": 3,
+                "ports": [8,9,10]
+            }
+        ]
+    },
+    {
+        "ip": "192.168.1.1",
+        "community": "security",
+        "config": [
+            {
+                "segment": 2,
+                "ports": [2,5,6,7]
+            },
+            {
+                "segment": 3,
+                "ports": [8,9,10]
             }
         ]
     }
