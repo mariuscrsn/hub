@@ -54,35 +54,35 @@ def config_hubs(json_object):
         El fichero de entrada esta validado y es correcto, por lo que se puede proceder
         a configurar los hubs
     '''
-
-    for machine_config in json_object:
-        ip = machine_config["ip"]
-        community = machine_config["community"]
-        snmp_res = subprocess.run(["snmpwalk", "-v", "1", "-c", community, ip, ".1.3.6.1.4.1.43.10.26.1.1.1.5"],
-                       capture_output=True)
-        if snmp_res.returncode != 0:
-            print("Fallo al establecer la conexion con el hub")
-            exit(1)
-        print ("==== Configurando el hub con ip: ", ip, "====")
-        for actual_config in machine_config["config"]:
-            segment = actual_config["segment"]
-            snmp_res = subprocess.run(
-                ["snmpget", "-v", "1", "-c", community, ip, ".1.3.6.1.4.1.43.10.26.1.1.1.5.1." + str(1000 + segment)],
-                capture_output=True)
-            if snmp_res.returncode != 0:
-                print("Fallo al obtener el valor del segmento")
+    with open("/dev/null", "w") as devnull:
+        for machine_config in json_object:
+            ip = machine_config["ip"]
+            community = machine_config["community"]
+            snmp_res = subprocess.call(["snmpwalk", "-v", "1", "-c", community, ip, ".1.3.6.1.4.1.43.10.26.1.1.1.5"], stdout=devnull)
+            if snmp_res!= 0:
+                print("Fallo al establecer la conexion con el hub")
                 exit(1)
-            seg_valor = int(snmp_res.stdout.split()[-1])
-            print("-- Añadiendo puertos al segmento:", segment, "--")
-            for port in actual_config["ports"]:
-                snmp_res = subprocess.run(
-                    ["snmpset", "-v", "1", "-c", community, ip,
-                     ".1.3.6.1.4.1.43.10.26.1.1.1.5.1." + str(port), "i", str(seg_valor)],
-                    capture_output=True)
+            print ("==== Configurando el hub con ip: ", ip, "====")
+            for actual_config in machine_config["config"]:
+                segment = actual_config["segment"]
+                snmp_res = subprocess.Popen(
+                    ["snmpget", "-v", "1", "-c", community, ip, ".1.3.6.1.4.1.43.10.26.1.1.1.5.1." + str(1000 + segment)],
+                    stdout=subprocess.PIPE)
+                out, err = snmp_res.communicate()
                 if snmp_res.returncode != 0:
-                    print("Fallo al asignar el puerto al segmento")
+                    print("Fallo al obtener el valor del segmento")
                     exit(1)
-                print("Puerto:", port)
+                seg_valor = int(out.split()[-1])
+                print("-- Anyadiendo puertos al segmento:", segment, "--")
+                for port in actual_config["ports"]:
+                    snmp_res = subprocess.call(
+                        ["snmpset", "-v", "1", "-c", community, ip,
+                         ".1.3.6.1.4.1.43.10.26.1.1.1.5.1." + str(port), "i", str(seg_valor)],
+                        stdout=devnull)
+                    if snmp_res != 0:
+                        print("Fallo al asignar el puerto al segmento")
+                        exit(1)
+                    print("Puerto:", port)
 
 def main():
     # Parseador de argumentos
